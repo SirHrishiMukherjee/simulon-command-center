@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="layout">
+  <nav class="sidebar">
+    <div class="group-label">Modules</div>
+    <div class="tab-list">
+      {% for t in tabs %}
+        <button class="tab-button" data-tab="{{ t|replace(' ','-') }}">{{ t }}</button>
+      {% endfor %}
+    </div>
+  </nav>
+
+  <section class="workspace">
+    <div class="panels">
+      <!-- SimuLang -->
+      <div class="tab-content" id="SimuLang">
+        <h2>SimuLang</h2>
+        <p>Run SimuLang programs. Paste code and hit Run.</p>
+        <textarea id="simulang-input" rows="10" placeholder="posit ∅ ∇ ∞ ds2(): { ... }"></textarea>
+        <div class="row">
+          <button id="run-simulang">Run</button>
+          <span id="simulang-status" class="muted"></span>
+        </div>
+        <pre id="simulang-output" class="console"></pre>
+      </div>
+
+      <!-- Pareto -->
+      <div class="tab-content" id="Pareto">
+        <h2>Pareto</h2>
+        <p>Paste a JSON array of values and Analyze.</p>
+        <textarea id="pareto-input" rows="6" placeholder="[3, 5, 8, 13, 21, 34]"></textarea>
+        <div class="row">
+          <button id="analyze-pareto">Analyze</button>
+          <span id="pareto-status" class="muted"></span>
+        </div>
+        <pre id="pareto-output" class="console"></pre>
+      </div>
+
+      <!-- Celestial-Navigation -->
+      <div class="tab-content" id="Celestial-Navigation">
+        {% include "partials/celestial.html" %}
+      </div>
+
+      <!-- Planetary Dynamics -->
+      <div class="tab-content" id="Planetary-Dynamics">
+        <h2>Planetary Dynamics</h2>
+        <p>Orbits, perturbations, transfers. (stub)</p>
+      </div>
+
+      <!-- CII -->
+      <div class="tab-content" id="CII">
+        <h2>CII • Control Core</h2>
+        <p>Intent control vector, signals, coherence. (stub)</p>
+      </div>
+
+      <!-- Flocking -->
+      <div class="tab-content" id="Flocking">
+        <h2>Flocking</h2>
+        <p>Simulon mobilization & flocking rules. (stub)</p>
+      </div>
+
+      <!-- Contradiction Engine -->
+      <div class="tab-content" id="Contradiction-Engine">
+        <h2>Contradiction Engine</h2>
+        <div class="row">
+          <input id="c1" placeholder="Contradiction A" />
+          <input id="c2" placeholder="Contradiction B" />
+          <button id="compute-contradiction">Compute</button>
+        </div>
+        <pre id="contradiction-output" class="console"></pre>
+      </div>
+
+      <!-- Inertia -->
+      <div class="tab-content" id="Inertia">
+        <h2>Inertia</h2>
+        <p>Frames, cancellation, metamaterials. (stub)</p>
+      </div>
+
+      <!-- Star -->
+      <div class="tab-content" id="Star">
+        <h2>Star</h2>
+        <p>Stellar profiles & emitters. (stub)</p>
+      </div>
+
+      <!-- Light -->
+      <div class="tab-content" id="Light">
+        <h2>Light</h2>
+        <p>Photonics, cavities, lattices. (stub)</p>
+      </div>
+
+      <!-- Gravity -->
+      <div class="tab-content" id="Gravity">
+        <h2>Gravity</h2>
+        <p>Warp fields, sinks, Q-sensors. (stub)</p>
+      </div>
+
+      <!-- Think Engine -->
+      <div class="tab-content" id="Think-Engine">
+        <h2>Think Engine</h2>
+        <p>DS256/512 hooks, symbolic compute. (stub)</p>
+      </div>
+
+      <!-- Kruger NP -->
+      <div class="tab-content" id="Kruger-NP">
+        <h2>Kruger NP</h2>
+        <p>Kruger planetary engine panel. (stub)</p>
+      </div>
+
+      <!-- Invaders -->
+      <div class="tab-content" id="Invaders">
+        <h2>Invaders</h2>
+        <p>Policy fields • Outcomes wheel. (stub)</p>
+      </div>
+
+      <!-- Warp Drive -->
+      <div class="tab-content" id="Warp-Drive">
+        {% include "partials/warp_drive.html" %}
+      </div>
+
+      <!-- Object Oriented Thinking -->
+      <div class="tab-content" id="Object-Oriented-Thinking">
+        <h2>Object Oriented Thinking</h2>
+        <p>Agents vs. Hunter-Gatherers • OBT ops. (stub)</p>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

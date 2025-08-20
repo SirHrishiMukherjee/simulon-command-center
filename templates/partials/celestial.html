@@ -1,0 +1,164 @@
+<div id="Celestial">
+  <style>
+    /* ===== Celestial (scoped) ===== */
+    #Celestial { --bg:#0f1115;--panel:#161a22;--card:#1c2230;--text:#e8eef7;--muted:#9bb0c8;--accent:#61dafb;--good:#6ee7a6;--warn:#fbbf24;--grid:#2a3242;--hl:#9f7aea;--bad:#f87171 }
+    #Celestial *{box-sizing:border-box}
+    #Celestial header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #202636;background:rgba(22,26,34,.85);backdrop-filter:blur(6px)}
+    #Celestial .brand{display:flex;gap:10px;align-items:center}
+    #Celestial .logo{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 30% 30%,#7cfcff,#4c50ff 45%,#1f1340 70%);box-shadow:0 0 24px rgba(97,218,251,.35),inset 0 0 18px rgba(255,255,255,.12)}
+    #Celestial .title{font-weight:700}.sub{font-size:12px;color:var(--muted)}
+    #Celestial #app{display:grid;gap:14px;padding:12px;
+      grid-template-columns:1fr 1fr; grid-template-rows:minmax(440px,40vh) auto;
+      grid-template-areas:"sky warp" "controls controls";}
+    #Celestial #skyCard{grid-area:sky}
+    #Celestial #warpCard{grid-area:warp}
+    #Celestial #controlsRow{grid-area:controls; display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+    @media (max-width:1200px){
+      #Celestial #app{grid-template-columns:1fr; grid-template-rows:minmax(360px,40vh) minmax(360px,40vh) auto; grid-template-areas:"sky" "warp" "controls";}
+      #Celestial #controlsRow{grid-template-columns:1fr}
+    }
+    #Celestial .card{background:rgba(22,26,34,.9);border:1px solid #232a3a;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.02)}
+    #Celestial .visual{position:relative;min-height:100%}
+    #Celestial .visualPad{padding:10px;height:100%}
+    #Celestial .stageWrap{position:relative;width:100%;height:100%}
+    #Celestial canvas{display:block;width:100%;height:100%;background:linear-gradient(180deg,#0b0e17,#0a0d14)}
+    #Celestial .legend{position:absolute;right:12px;top:12px;background:rgba(16,20,30,.78);padding:8px 10px;border:1px solid #27304a;border-radius:10px;font-size:12px}
+    #Celestial .pill{display:inline-block;padding:2px 8px;border-radius:999px;margin:2px 2px;border:1px solid #2a3250}
+    #Celestial .pill.blue{background:rgba(97,218,251,.12);color:#bdefff}
+    #Celestial .pill.green{background:rgba(110,231,166,.12);color:#c7f8de}
+    #Celestial .pill.purple{background:rgba(159,122,234,.12);color:#e1d1ff}
+    #Celestial .pill.gold{background:rgba(251,191,36,.12);color:#ffe3a3}
+    #Celestial .pill.pos{background:rgba(110,231,166,.12);color:#bdf8dc;border-color:#245c41}
+    #Celestial .pill.neg{background:rgba(248,113,113,.12);color:#ffd1d1;border-color:#5c2424}
+    #Celestial .stats{position:absolute;right:12px;bottom:12px;background:rgba(16,20,30,.78);padding:10px;border:1px solid #27304a;border-radius:10px;font-size:12px}
+    #Celestial .statLine{display:flex;justify-content:space-between;gap:12px;margin:4px 0}
+    #Celestial .muted{color:var(--muted)}
+    #Celestial .panel{border:1px solid #232a3a;background:rgba(22,26,34,.9);border-radius:14px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.02)}
+    #Celestial .panel .h{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:2px 0 8px}
+    #Celestial .row{display:flex;gap:10px;align-items:center;margin:8px 0}
+    #Celestial .row input[type="range"]{flex:1}
+    #Celestial .btn{padding:7px 10px;background:var(--card);border:1px solid #2a3147;color:var(--text);border-radius:10px;cursor:pointer;font-size:13px}
+    #Celestial .btn:hover{border-color:#3a425e}
+    #Celestial .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+    #Celestial textarea.code{width:100%;min-height:150px;resize:vertical;border:1px solid #283048;border-radius:12px;background:#151a26;color:#e8eef7;padding:10px;outline:none}
+    #Celestial .outlookGrid{display:grid;grid-template-columns:1fr auto;gap:6px;background:rgba(21,26,38,.7);border:1px solid #27304a;border-radius:10px;padding:8px;margin:8px 0}
+    #Celestial .toggle{padding:4px 8px;border-radius:999px;border:1px solid #2a3147;cursor:pointer;font-size:12px;background:linear-gradient(180deg,#1f2a44,#1a2440)}
+    #Celestial .toggle.pos{border-color:#2b6b54}.toggle.neg{border-color:#6b2b2b}
+    #Celestial .swatch{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    #Celestial .note{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.35}
+    #Celestial #warpHostTitle{display:flex;align-items:center;gap:10px;margin:6px 0 10px}
+    #Celestial #warpHostTitle .dot{width:7px;height:7px;border-radius:50%;background:#79ffe1;box-shadow:0 0 12px rgba(121,255,225,.45)}
+    #Celestial #warpHostTitle .t{font-weight:800;letter-spacing:.4px}
+  </style>
+
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Celestial • Simulonic × Infosophic Lab</div>
+        <div class="sub">Sky dome • Lens • Dynamic Pareto • SimuLang • Auto Sextant • CII Intent Vector</div>
+      </div>
+    </div>
+    <div class="sub">Infosophic: Gösta Greimel • Simulonic: Hrishi Mukherjee • Integration: Greimel & Mukherjee • OBT: Oliver Boeschenstein</div>
+  </header>
+
+  <div id="app">
+    <!-- SKY -->
+    <div id="skyCard" class="card visual">
+      <div class="visualPad">
+        <div class="stageWrap" id="stageWrap">
+          <canvas id="stage"></canvas>
+
+          <div class="legend">
+            <span class="pill blue">ART t-field</span>
+            <span class="pill green">Lock-on</span>
+            <span class="pill purple">Infosophic ⇄ Simulonic</span>
+            <span class="pill gold">ds² gauges</span>
+            <span class="pill pos">Optimistic</span>
+            <span class="pill neg">Pessimistic</span>
+          </div>
+
+          <div class="stats" id="statsBox">
+            <div class="statLine"><span class="muted">ds² (Green)</span><span class="mono" id="statG">0.000</span></div>
+            <div class="statLine"><span class="muted">ds² (Vacuum)</span><span class="mono" id="statV">0.000</span></div>
+            <div class="statLine"><span class="muted">Locked</span><span class="mono" id="statL">0</span></div>
+            <div class="statLine"><span class="muted">τ</span><span class="mono" id="statT">0.00</span></div>
+            <div class="statLine"><span class="muted">Head k/N</span><span class="mono" id="statK">0/0</span></div>
+            <div class="statLine"><span class="muted">Head mass</span><span class="mono" id="statMass">0.00</span></div>
+            <div class="statLine"><span class="muted">Optimistic</span><span class="mono" id="statPos">0</span></div>
+            <div class="statLine"><span class="muted">Pessimistic</span><span class="mono" id="statNeg">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WARPDOCK (shadow DOM mount) -->
+    <div id="warpCard" class="card visual">
+      <div class="visualPad">
+        <div id="warpHostTitle">
+          <div class="dot"></div><div class="t">WarpDock • New Canada Warp Drive</div>
+          <div class="sub" style="margin-left:auto;">CII routing • particle flux • intent bias</div>
+        </div>
+        <div id="warpMount"></div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div id="controlsRow">
+      <div id="ctrlPanel" class="panel">
+        <div class="h">Observer & Sextant</div>
+        <div class="row"><span class="muted">Observer Lon</span><input id="rngObsLon" type="range" min="-180" max="180" step="1"><span class="mono" id="labObsLon"></span></div>
+        <div class="row"><span class="muted">Observer Lat</span><input id="rngObsLat" type="range" min="-80" max="80" step="1"><span class="mono" id="labObsLat"></span></div>
+        <div class="row">
+          <div class="row" style="flex:1">
+            <div class="row" style="gap:12px;flex-wrap:wrap">
+              <label class="muted" style="display:flex;align-items:center;gap:8px"><input id="chkAutoSextant" type="checkbox"> Auto Sextant Lock</label>
+              <span class="muted">Lock speed</span>
+              <input id="rngAutoSpeed" type="range" min="0.02" max="0.5" step="0.01" value="0.15" style="flex:1">
+              <span class="mono" id="labAutoSpeed">0.15</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="h">CII Intent Vector (sky)</div>
+        <div class="row"><span class="muted">Bearing (az°)</span><input id="rngBearing" type="range" min="0" max="360" step="1"><span class="mono" id="labBearing"></span></div>
+        <div class="row"><span class="muted">Elevation (alt°)</span><input id="rngAlt" type="range" min="0" max="90" step="1"><span class="mono" id="labAlt"></span></div>
+        <div class="row"><span class="muted">Magnitude</span><input id="rngMag" type="range" min="0" max="1" step="0.01" value="0.7"><span class="mono" id="labMag">0.70</span></div>
+        <div class="row"><span class="muted">Gain</span><input id="rngGain" type="range" min="0" max="2" step="0.01" value="0.6"><span class="mono" id="labGain">0.60</span></div>
+
+        <div class="h">Dynamic Pareto & ART</div>
+        <div class="row"><span class="muted">τ (manual)</span><input id="rngTau" type="range" min="0.05" max="1.5" step="0.01"><span class="mono" id="labTau"></span></div>
+        <div class="row"><label class="muted" style="display:flex;align-items:center;gap:8px"><input id="chkAutoPareto" type="checkbox" /> Auto Pareto (keep ~20% head for target mass)</label></div>
+        <div class="row"><span class="muted">Target head mass</span><input id="rngTargetMass" type="range" min="0.50" max="0.95" step="0.01" style="flex:1"><span class="mono" id="labTargetMass"></span></div>
+        <div class="row"><span class="muted">ν (DOF)</span><input id="rngNu" type="range" min="1" max="12" step="1"><span class="mono" id="labNu"></span></div>
+        <div class="row"><span class="muted">Points</span><input id="rngPts" type="range" min="60" max="3000" step="20"><span class="mono" id="labPts"></span></div>
+        <div class="row"><span class="muted">Mood Strength</span><input id="rngMood" type="range" min="0" max="2" step="0.05" style="flex:1"><span class="mono" id="labMood"></span></div>
+        <div class="row"><button class="btn" id="btnShuffle">Shuffle Seed</button><button class="btn" id="btnClear">Clear Lock-ons</button></div>
+
+        <div class="h">Outlooks (per dimension)</div>
+        <div id="outlookGrid" class="outlookGrid"></div>
+        <div class="note">Simulation labels only—abstract categories to test geometry. No real-world judgments are implied.</div>
+
+        <div class="h">Lens</div>
+        <div class="row">
+          <button class="btn" id="btnLensMode">Lens: Infosophic (I)</button>
+          <span class="muted">Angular radius</span>
+          <input id="rngLensR" type="range" min="5" max="60" step="1" style="flex:1;max-width:240px">
+          <span class="mono" id="labLensR">20°</span>
+        </div>
+
+        <div class="h">SimuLang Hook (mini) + Runtime</div>
+        <textarea id="simTxt" class="code mono" spellcheck="false"></textarea>
+        <div class="row">
+          <label class="muted" style="display:flex;align-items:center;gap:8px"><input id="chkAutoExec" type="checkbox"> Auto-exec on lock & lens</label>
+          <button class="btn" id="btnRun">Run Now</button>
+          <button class="btn" id="btnReset">Reset</button>
+        </div>
+        <div id="runtimeLog" class="log" style="max-height:180px;overflow:auto;border:1px solid #283048;border-radius:12px;background:#0f1524;padding:8px;font:12px/1.5 ui-monospace;color:#cfe8ff"></div>
+        <div class="row"><button class="btn" id="btnApply">Apply SimuLang</button></div>
+      </div>
+
+      <div id="warpControls" class="panel"><!-- built by JS --></div>
+    </div>
+  </div>
+</div>

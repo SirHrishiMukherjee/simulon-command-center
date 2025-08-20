@@ -1,0 +1,204 @@
+<style>
+  /* --- Scoped to Warp tab --- */
+  #Warp-Drive {
+    --ink:#e8f0ff; --muted:#a5b1cc; --edge:#6aa8ff; --glow:#79ffe1; --node:#ffffff;
+    --ok:#47ff9d; --warn:#ffd35c; --bad:#ff6a6a;
+    --shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 0 40px rgba(255,255,255,.03);
+  }
+  #Warp-Drive .title{
+    font-weight:900;font-size:clamp(24px,4.2vw,46px); color:var(--ink);
+    padding:.35rem .9rem;border-radius:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow);
+    text-align:center; display:inline-block;
+  }
+  #Warp-Drive .wrap{display:grid;gap:16px; grid-template-columns: 1.25fr .85fr; padding: 10px}
+  @media (max-width: 1024px){ #Warp-Drive .wrap{grid-template-columns: 1fr} }
+
+  #Warp-Drive .stage,#Warp-Drive .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.08); border-radius:20px; box-shadow: var(--shadow);
+  }
+  #Warp-Drive .stage{position:relative; min-height:560px; overflow:hidden}
+  #Warp-Drive svg{width:100%; height:100%; display:block}
+
+  #Warp-Drive .edge{ stroke: var(--edge); stroke-opacity:.38; stroke-width: 5; fill:none; filter:url(#edgeGlow) }
+  #Warp-Drive .edge.active{ stroke-opacity:.85; stroke-width:8 }
+  #Warp-Drive .edge.main{ stroke-width:10; stroke-opacity:.95 }
+
+  #Warp-Drive .node{ fill: var(--node); stroke:#94c6ff; stroke-width:3; filter:url(#nodeGlow); transition: transform .12s ease }
+  #Warp-Drive .node-wrap:hover .node{ transform: scale(1.06) }
+  #Warp-Drive .hit{ fill: transparent; pointer-events: all }
+  #Warp-Drive .label{
+    font-weight:800; font-size: 14.5px; fill: var(--ink);
+    paint-order: stroke; stroke: rgba(0,0,0,.55); stroke-width:3px; pointer-events:none;
+  }
+  #Warp-Drive .sublabel{ font-size:12px; fill: var(--muted); pointer-events:none }
+
+  /* Particles */
+  #Warp-Drive #particles{ pointer-events:none }
+  #Warp-Drive .particle{
+    fill: var(--glow); stroke: #cffff0; stroke-width: 0.6;
+  }
+
+  /* Warp effect */
+  #Warp-Drive .warping{ animation: warpBlink .6s ease-in-out 1 }
+  @keyframes warpBlink{
+    0%{ opacity:1; transform: scale(1) }
+    35%{ opacity:0; transform: scale(.25) }
+    65%{ opacity:0; transform: scale(.25) }
+    100%{ opacity:1; transform: scale(1) }
+  }
+
+  /* Intent arrow */
+  #Warp-Drive .intent-arrow{ filter:url(#edgeGlow) }
+  #Warp-Drive .intent-stem{ stroke:url(#flux); stroke-width:8; stroke-opacity:.85; fill:none }
+  #Warp-Drive .intent-head{ fill:url(#flux); opacity:.9 }
+  #Warp-Drive .intent-core{ fill: none; stroke:#79ffe1; stroke-dasharray:5 6; stroke-opacity:.5 }
+
+  #Warp-Drive .panel{ padding:16px; color: var(--ink) }
+  #Warp-Drive .panel h2{ margin:0 0 10px; font-size:18px; letter-spacing:.4px }
+  #Warp-Drive .group{ margin:12px 0 18px; padding:10px; border-radius:12px; border:1px dashed rgba(255,255,255,.12) }
+  #Warp-Drive .group h3{ margin:0 0 8px; font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px }
+  #Warp-Drive .row{ display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; margin: 8px 0 }
+  #Warp-Drive .row label{ font-size:13px }
+  #Warp-Drive .row output{ font-variant-numeric: tabular-nums; color:#8bffcc }
+
+  #Warp-Drive input[type="range"]{ width:100%; -webkit-appearance:none; background:transparent; height:28px }
+  #Warp-Drive input[type="range"]::-webkit-slider-runnable-track{ height:8px; border-radius:8px; background: linear-gradient(90deg,#223,#2b3a5f); border:1px solid rgba(255,255,255,.12) }
+  #Warp-Drive input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; margin-top:-5px; border-radius:50%; background:#fff; border:2px solid #94c6ff; box-shadow: 0 0 0 6px rgba(121,255,225,.18) }
+  #Warp-Drive input[type="range"]::-moz-range-track{ height:8px; border-radius:8px; background:#2b3a5f }
+  #Warp-Drive input[type="range"]::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:#fff; border:2px solid #94c6ff; box-shadow: 0 0 0 6px rgba(121,255,225,.18) }
+
+  #Warp-Drive select, #Warp-Drive .btn{
+    background:#121a2a; color:var(--ink); border:1px solid rgba(255,255,255,.16);
+    border-radius:12px; padding:10px 12px; cursor:pointer;
+    transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  #Warp-Drive .btn:hover, #Warp-Drive select:hover{ transform: translateY(-1px); border-color: rgba(121,255,225,.6); box-shadow: 0 0 0 4px rgba(121,255,225,.1) inset }
+  #Warp-Drive .mini{ font-size:12.5px; padding:6px 10px; opacity:.9 }
+
+  #Warp-Drive .controls{ display:flex; gap:10px; flex-wrap:wrap }
+  #Warp-Drive .readouts{ display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top:8px }
+  #Warp-Drive .meter{ background:#0e1422; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px; text-align:center }
+  #Warp-Drive .meter .v{ font-size:18px; font-weight:800 }
+  #Warp-Drive .meter .ok{ color:var(--ok) } #Warp-Drive .meter .warn{ color:var(--warn) } #Warp-Drive .meter .bad{ color:var(--bad) }
+
+  #Warp-Drive .hint{ color:var(--muted); font-size:12.5px }
+  #Warp-Drive footer{ text-align:center; font-size:12.5px; color:var(--muted); padding:8px 12px 0; user-select:none }
+</style>
+
+<header><div class="title">New Canada Warp Drive</div></header>
+
+<div class="wrap">
+  <div class="stage">
+    <svg id="graph" viewBox="0 0 1000 680" role="img" aria-labelledby="svgTitle svgDesc">
+      <title id="svgTitle">Warp Drive Interaction Graph</title>
+      <desc id="svgDesc">INC, MEA, HO plus 12 SFGs in a toroidal ring; complete graph; particles; intent vector.</desc>
+
+      <defs>
+        <filter id="edgeGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#6aa8ff" flood-opacity=".55"/>
+          <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#79ffe1" flood-opacity=".28"/>
+        </filter>
+        <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#ffffff" flood-opacity=".9"/>
+          <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#79ffe1" flood-opacity:.4/>
+        </filter>
+        <linearGradient id="flux" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6aa8ff"/><stop offset="100%" stop-color="#79ffe1"/>
+        </linearGradient>
+        <marker id="arrowHead" viewBox="0 0 16 16" refX="8" refY="8" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+          <path d="M0,0 L16,8 L0,16 L4,8 Z" class="intent-head"/>
+        </marker>
+      </defs>
+
+      <!-- layers -->
+      <g id="edges"></g>
+      <g id="particles"></g>
+      <g id="nodes"></g>
+      <g id="intentLayer" class="intent-arrow"></g>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <h2>Control Panel</h2>
+
+    <div class="group">
+      <h3>System Bias</h3>
+      <div class="row">
+        <label>Resonance Bias <output id="o_bias">0.50</output></label>
+        <input id="bias" type="range" min="0" max="1" step="0.01" value="0.50"/>
+      </div>
+      <div class="row">
+        <label>Flux Intensity <output id="o_flux">0.80</output></label>
+        <input id="flux" type="range" min="0" max="1" step="0.01" value="0.80"/>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>CII Control Core — Intent Vector</h3>
+      <div class="row">
+        <label>Bearing (°) <output id="o_bearing">0</output></label>
+        <input id="bearing" type="range" min="0" max="360" step="1" value="0"/>
+      </div>
+      <div class="row">
+        <label>Magnitude <output id="o_mag">0.70</output></label>
+        <input id="mag" type="range" min="0" max="1" step="0.01" value="0.70"/>
+      </div>
+      <div class="row">
+        <label>Gain <output id="o_gain">0.60</output></label>
+        <input id="gain" type="range" min="0" max="2" step="0.01" value="0.60"/>
+      </div>
+      <div class="row">
+        <label>Focus</label>
+        <select id="focus">
+          <option value="all">All Links</option>
+          <option value="core">Core Triangle</option>
+          <option value="sfg">SFG Ring</option>
+          <option value="target">Toward Target Node</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>Target Node</label>
+        <select id="targetNode">
+          <option value="INC">INC</option>
+          <option value="MEA">MEA</option>
+          <option value="HO">HO</option>
+          <option value="SFG1">SFG1</option><option value="SFG2">SFG2</option>
+          <option value="SFG3">SFG3</option><option value="SFG4">SFG4</option>
+          <option value="SFG5">SFG5</option><option value="SFG6">SFG6</option>
+          <option value="SFG7">SFG7</option><option value="SFG8">SFG8</option>
+          <option value="SFG9">SFG9</option><option value="SFG10">SFG10</option>
+          <option value="SFG11">SFG11</option><option value="SFG12">SFG12</option>
+        </select>
+      </div>
+      <div class="controls" style="margin-top:8px">
+        <button class="btn mini" id="pulse">Intent Pulse</button>
+        <label style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="autoSteer" /> Auto-steer to Coherence
+        </label>
+      </div>
+      <div class="hint" style="margin-top:6px">
+        The Intent Vector biases energy routing along its bearing; focus narrows which links are prioritized. Auto-steer rotates intent toward higher coherence.
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="toggle">Pause</button>
+      <button class="btn mini" id="reset">Reset</button>
+      <button class="btn mini" id="burst">Global Burst</button>
+    </div>
+
+    <div class="readouts">
+      <div class="meter"><div>Coupling</div><div class="v" id="couplingVal">0.00</div></div>
+      <div class="meter"><div>Coherence</div><div class="v" id="coherenceVal">0.00</div></div>
+      <div class="meter"><div>Warp Readiness</div><div class="v" id="readinessVal">Idle</div></div>
+    </div>
+    <p style="margin-top:10px" class="hint">
+      Tip: Click any node to emit a burst to all others. After several activations, the node <em>warps</em>.
+    </p>
+  </div>
+</div>
+
+<footer>Property of Copyright Hrishi Mukherjee Horizons 2025</footer>
